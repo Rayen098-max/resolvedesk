@@ -5,7 +5,6 @@ from datetime import datetime
 import os
 import requests
 import pytz
-from jira import JIRA
 import logging
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
