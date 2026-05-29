@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="font-weight:700;">Create Ticket</h2>
+</div>
+
+<div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:32px;max-width:620px;">
+    <form action="{{ url_for('submit_ticket') }}" method="POST">
+        <div class="mb-3">
+            <label class="form-label" style="font-weight:500;">Customer Name</label>
+            <input type="text" class="form-control" name="name" placeholder="e.g. Jane Smith" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" style="font-weight:500;">Customer Email</label>
+            <input type="email" class="form-control" name="email" placeholder="e.g. jane@example.com" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" style="font-weight:500;">Subject</label>
+            <input type="text" class="form-control" name="subject" placeholder="Brief summary of the issue" required>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" style="font-weight:500;">Description</label>
+            <textarea class="form-control" name="description" rows="5" placeholder="Describe the issue in detail..." required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" style="background:#4F46E5;border:none;padding:10px 28px;border-radius:8px;font-weight:500;">
+            <i class="fas fa-plus me-2"></i>Submit Ticket
+        </button>
+    </form>
+</div>
+{% endblock %}

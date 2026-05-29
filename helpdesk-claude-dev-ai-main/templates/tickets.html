@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="font-weight:700;margin:0;">Tickets</h2>
+    <a href="{{ url_for('create_ticket') }}" class="btn btn-primary" style="background:#4F46E5;border:none;padding:8px 20px;border-radius:8px;">
+        <i class="fas fa-plus me-2"></i>New Ticket
+    </a>
+</div>
+
+<!-- Search + Filter -->
+<div class="d-flex gap-3 mb-4 flex-wrap">
+    <input type="text" id="searchInput" class="form-control" placeholder="Search by name, ID, email, title..." style="max-width:320px;border-radius:8px;">
+    <div class="btn-group" id="statusFilter">
+        <button class="btn btn-sm filter-btn active" data-status="All" style="border-radius:8px 0 0 8px;border:1px solid #e5e7eb;background:#4F46E5;color:#fff;">All</button>
+        <button class="btn btn-sm filter-btn" data-status="Open" style="border:1px solid #e5e7eb;background:#fff;">Open</button>
+        <button class="btn btn-sm filter-btn" data-status="In Progress" style="border:1px solid #e5e7eb;background:#fff;">In Progress</button>
+        <button class="btn btn-sm filter-btn" data-status="Closed" style="border-radius:0 8px 8px 0;border:1px solid #e5e7eb;background:#fff;">Closed</button>
+    </div>
+</div>
+
+<!-- Table -->
+<div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+    <table class="table mb-0" id="ticketsTable">
+        <thead style="background:#f9fafb;">
+            <tr>
+                <th style="padding:12px 16px;">ID</th>
+                <th>Title</th>
+                <th>Status</th>
+                <th>Requester</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ticketBody">
+            {% for ticket in tickets %}
+            <tr data-status="{{ ticket.status }}" data-search="{{ ticket.requester_name|lower }} {{ ticket.requester_email|lower }} {{ ticket.title|lower }} tkt-{{ '%03d'|format(ticket.id) }}">
+                <td style="padding:12px 16px;">
+                    <a href="{{ url_for('edit_ticket', id=ticket.id) }}" style="color:#4F46E5;font-weight:600;">TKT-{{ '%03d'|format(ticket.id) }}</a>
+                </td>
+                <td>{{ ticket.title }}</td>
+                <td>
+                    {% if ticket.status == 'Open' %}
+                        <span style="background:#fef3c7;color:#92400e;padding:3px 12px;border-radius:12px;font-size:0.82rem;font-weight:600;">Open</span>
+                    {% elif ticket.status == 'In Progress' %}
+                        <span style="background:#dbeafe;color:#1e40af;padding:3px 12px;border-radius:12px;font-size:0.82rem;font-weight:600;">In Progress</span>
+                    {% else %}
+                        <span style="background:#dcfce7;color:#166534;padding:3px 12px;border-radius:12px;font-size:0.82rem;font-weight:600;">Closed</span>
+                    {% endif %}
+                </td>
+                <td>{{ ticket.requester_name }}</td>
+                <td style="color:#6b7280;font-size:0.9rem;">{{ ticket.requester_email }}</td>
+                <td style="color:#6b7280;font-size:0.9rem;">{{ ticket.created_at }}</td>
+                <td>
+                    <form action="{{ url_for('delete_ticket', id=ticket.id) }}" method="POST" style="display:inline;">
+                        <button type="submit" class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:none;border-radius:6px;" onclick="return confirm('Delete this ticket?');">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    const searchInput = document.getElementById('searchInput');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    let activeStatus = 'All';
+
+    function filterTable() {
+        const query = searchInput.value.toLowerCase();
+        document.querySelectorAll('#ticketBody tr').forEach(row => {
+            const matchSearch = row.dataset.search.includes(query);
+            const matchStatus = activeStatus === 'All' || row.dataset.status === activeStatus;
+            row.style.display = (matchSearch && matchStatus) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            filterBtns.forEach(b => {
+                b.style.background = '#fff';
+                b.style.color = '#000';
+            });
+            this.style.background = '#4F46E5';
+            this.style.color = '#fff';
+            activeStatus = this.dataset.status;
+            filterTable();
+        });
+    });
+</script>
+{% endblock %}

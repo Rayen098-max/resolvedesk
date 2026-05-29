@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4" style="font-weight:700;">Dashboard</h2>
+
+<div class="row g-3 mb-5">
+    <div class="col-6 col-md-3">
+        <div class="p-4 rounded-3 text-center" style="background:#fff;border:1px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+            <div style="font-size:2rem;font-weight:800;color:#4F46E5;">{{ total }}</div>
+            <div style="color:#6b7280;font-size:0.9rem;margin-top:4px;">Total Tickets</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-4 rounded-3 text-center" style="background:#fff;border:1px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+            <div style="font-size:2rem;font-weight:800;color:#d97706;">{{ open_count }}</div>
+            <div style="color:#6b7280;font-size:0.9rem;margin-top:4px;">Open</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-4 rounded-3 text-center" style="background:#fff;border:1px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+            <div style="font-size:2rem;font-weight:800;color:#2563eb;">{{ inprogress_count }}</div>
+            <div style="color:#6b7280;font-size:0.9rem;margin-top:4px;">In Progress</div>
+        </div>
+    </div>
+    <div class="col-6 col-md-3">
+        <div class="p-4 rounded-3 text-center" style="background:#fff;border:1px solid #e5e7eb;box-shadow:0 1px 4px rgba(0,0,0,0.06)">
+            <div style="font-size:2rem;font-weight:800;color:#16a34a;">{{ closed_count }}</div>
+            <div style="color:#6b7280;font-size:0.9rem;margin-top:4px;">Closed</div>
+        </div>
+    </div>
+</div>
+
+<h5 class="mb-3" style="font-weight:600;">Recent Tickets</h5>
+<div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+    <table class="table mb-0">
+        <thead style="background:#f9fafb;">
+            <tr>
+                <th style="padding:12px 16px;">ID</th>
+                <th>Title</th>
+                <th>Requester</th>
+                <th>Status</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in recent %}
+            <tr>
+                <td style="padding:12px 16px;"><a href="/tickets/{{ t.id }}/edit" style="color:#4F46E5;font-weight:600;">TKT-{{ '%03d'|format(t.id) }}</a></td>
+                <td>{{ t.title }}</td>
+                <td>{{ t.requester_name }}</td>
+                <td>
+                    {% if t.status == 'Open' %}
+                        <span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:12px;font-size:0.82rem;font-weight:600;">Open</span>
+                    {% elif t.status == 'In Progress' %}
+                        <span style="background:#dbeafe;color:#1e40af;padding:2px 10px;border-radius:12px;font-size:0.82rem;font-weight:600;">In Progress</span>
+                    {% else %}
+                        <span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:12px;font-size:0.82rem;font-weight:600;">Closed</span>
+                    {% endif %}
+                </td>
+                <td style="color:#6b7280;font-size:0.9rem;">{{ t.created_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

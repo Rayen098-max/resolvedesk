@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 style="font-weight:700;">TKT-{{ '%03d'|format(ticket.id) }}</h2>
+    <a href="{{ url_for('tickets') }}" style="color:#4F46E5;">← Back to Tickets</a>
+</div>
+
+<div class="row g-4">
+    <!-- Left: Edit form -->
+    <div class="col-md-7">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:28px;">
+            <h6 style="font-weight:600;margin-bottom:20px;">Ticket Details</h6>
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Title</label>
+                    <input type="text" class="form-control" name="title" value="{{ ticket.title }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Description</label>
+                    <textarea class="form-control" name="description" rows="4" required>{{ ticket.description }}</textarea>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label class="form-label" style="font-weight:500;">Status</label>
+                        <select class="form-select" name="status">
+                            <option value="Open" {% if ticket.status == 'Open' %}selected{% endif %}>Open</option>
+                            <option value="In Progress" {% if ticket.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                            <option value="Closed" {% if ticket.status == 'Closed' %}selected{% endif %}>Closed</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label" style="font-weight:500;">Priority</label>
+                        <select class="form-select" name="priority">
+                            <option value="Low" {% if ticket.priority == 'Low' %}selected{% endif %}>Low</option>
+                            <option value="Medium" {% if ticket.priority == 'Medium' %}selected{% endif %}>Medium</option>
+                            <option value="High" {% if ticket.priority == 'High' %}selected{% endif %}>High</option>
+                            <option value="Urgent" {% if ticket.priority == 'Urgent' %}selected{% endif %}>Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Requester Name</label>
+                    <input type="text" class="form-control" name="requester_name" value="{{ ticket.requester_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Requester Email</label>
+                    <input type="email" class="form-control" name="requester_email" value="{{ ticket.requester_email }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Category</label>
+                    <input type="text" class="form-control" name="category" value="{{ ticket.category }}">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" style="font-weight:500;">Assigned To</label>
+                    <input type="text" class="form-control" name="assigned_to" value="{{ ticket.assigned_to }}">
+                </div>
+                <button type="submit" class="btn btn-primary" style="background:#4F46E5;border:none;padding:8px 24px;border-radius:8px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Right: Notes -->
+    <div class="col-md-5">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:28px;">
+            <h6 style="font-weight:600;margin-bottom:16px;">Notes & Comments</h6>
+
+            <!-- Add note form -->
+            <form method="POST" action="{{ url_for('add_note', id=ticket.id) }}" class="mb-4">
+                <textarea class="form-control mb-2" name="note_text" rows="3" placeholder="Write a note..." required style="border-radius:8px;"></textarea>
+                <button type="submit" class="btn btn-sm" style="background:#4F46E5;color:#fff;border:none;border-radius:8px;padding:6px 18px;">Add Note</button>
+            </form>
+
+            <!-- Notes list -->
+            {% if notes %}
+                {% for note in notes %}
+                <div style="background:#f9fafb;border:1px solid #e5e7eb;border-radius:8px;padding:12px 14px;margin-bottom:10px;">
+                    <div style="color:#111;font-size:0.92rem;">{{ note.note_text }}</div>
+                    <div style="color:#9ca3af;font-size:0.78rem;margin-top:6px;">{{ note.created_at.strftime('%b %d, %Y %I:%M %p') }}</div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p style="color:#9ca3af;font-size:0.9rem;">No notes yet.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

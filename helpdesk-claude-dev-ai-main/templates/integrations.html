@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4" style="font-weight:700;">Analytics</h2>
+
+<div class="row g-4">
+    <div class="col-md-6">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:24px;">
+            <h6 style="font-weight:600;margin-bottom:16px;">Tickets by Status</h6>
+            <canvas id="statusChart"></canvas>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div style="background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:24px;">
+            <h6 style="font-weight:600;margin-bottom:16px;">Tickets Created (Last 7 Days)</h6>
+            <canvas id="dailyChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const statusData = {{ status_data | tojson }};
+    const dailyData = {{ daily_data | tojson }};
+
+    new Chart(document.getElementById('statusChart'), {
+        type: 'bar',
+        data: {
+            labels: statusData.labels,
+            datasets: [{
+                label: 'Tickets',
+                data: statusData.values,
+                backgroundColor: ['#fef3c7', '#dbeafe', '#dcfce7'],
+                borderColor: ['#d97706', '#2563eb', '#16a34a'],
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+
+    new Chart(document.getElementById('dailyChart'), {
+        type: 'bar',
+        data: {
+            labels: dailyData.labels,
+            datasets: [{
+                label: 'Tickets',
+                data: dailyData.values,
+                backgroundColor: '#c7d2fe',
+                borderColor: '#4F46E5',
+                borderWidth: 2,
+                borderRadius: 6
+            }]
+        },
+        options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+    });
+</script>
+{% endblock %}
